@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Param } from '@nestjs/common';
 import { AppService } from './app.service';
-import { nguoi_dung } from '@prisma/client';
+import { binh_luan, nguoi_dung } from '@prisma/client';
+import { ListUser } from './entities/auth.entity';
 
 @Controller()
 export class AppController {
@@ -34,8 +35,12 @@ export class AppController {
   getImgSaveId(@Param('id') id: string) {
     return this.appService.getImgSaveId(id)
   }
-  // @Get('/get-comment-imgid/:id')
-  // // getCommentImgId(@Param('id') id: string){
-  // //   return this.appService.getCommentImgId(id)
-  // // }
+  @Post('/comment-img-id/:id')
+  createCommentImgId(@Body() body:binh_luan) {
+    return this.appService.createCommentImgId(body)
+  }
+  @Get('/get-user')
+  getUser(){
+    return this.appService.getUser()
+  }
 }

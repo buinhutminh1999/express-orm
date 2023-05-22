@@ -1,5 +1,5 @@
 import { AppService } from './app.service';
-import { nguoi_dung } from '@prisma/client';
+import { binh_luan, nguoi_dung } from '@prisma/client';
 export declare class AppController {
     private readonly appService;
     constructor(appService: AppService);
@@ -17,6 +17,15 @@ export declare class AppController {
     }>;
     getImgSaveId(id: string): Promise<{
         status: number;
+        message: string;
+    }>;
+    createCommentImgId(body: binh_luan): Promise<{
+        status: number;
+        message: string;
+    }>;
+    getUser(): Promise<{
+        status: number;
+        data: any;
         message: string;
     }>;
 }

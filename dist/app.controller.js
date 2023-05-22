@@ -40,6 +40,12 @@ let AppController = class AppController {
     getImgSaveId(id) {
         return this.appService.getImgSaveId(id);
     }
+    createCommentImgId(body) {
+        return this.appService.createCommentImgId(body);
+    }
+    getUser() {
+        return this.appService.getUser();
+    }
 };
 __decorate([
     (0, common_1.Post)('/signup'),
@@ -89,6 +95,19 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], AppController.prototype, "getImgSaveId", null);
+__decorate([
+    (0, common_1.Post)('/comment-img-id/:id'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AppController.prototype, "createCommentImgId", null);
+__decorate([
+    (0, common_1.Get)('/get-user'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], AppController.prototype, "getUser", null);
 AppController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService])

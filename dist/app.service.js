@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const client_1 = require("@prisma/client");
 const bcrypt = require("bcrypt");
 const response_1 = require("./untils/response");
+const moment = require("moment");
 let AppService = class AppService {
     constructor() {
         this.prisma = new client_1.PrismaClient();
@@ -26,7 +27,6 @@ let AppService = class AppService {
         }
         const mat_khau = bcrypt.hashSync(nguoi_dung.mat_khau, 1);
         const data = Object.assign(Object.assign({}, nguoi_dung), { mat_khau });
-        console.log(data);
         await this.prisma.nguoi_dung.create({ data });
         throw new common_1.HttpException('Đăng ký thành công', common_1.HttpStatus.CREATED);
     }
@@ -103,6 +103,34 @@ let AppService = class AppService {
             return (0, response_1.failCode)(common_1.HttpStatus.BAD_REQUEST, 'Hình đã tồn tại trong hệ thống');
         }
         return (0, response_1.failCode)(common_1.HttpStatus.ACCEPTED, 'Hình chưa được lưu');
+    }
+    async createCommentImgId(binhLuan) {
+        const checkImg = await this.prisma.hinh_anh.findFirst({
+            where: {
+                hinh_id: +binhLuan.hinh_id
+            }
+        });
+        const checkUser = await this.prisma.nguoi_dung.findFirst({
+            where: {
+                nguoi_dung_id: +binhLuan.nguoi_dung_id
+            }
+        });
+        if (checkImg) {
+            if (checkUser) {
+                const ngay_binh_luan = moment(binhLuan.ngay_binh_luan, 'YYYY-MM-DD HH:mm:ss').toDate();
+                const processData = Object.assign(Object.assign({}, binhLuan), { ngay_binh_luan });
+                await this.prisma.binh_luan.create({ data: processData });
+                return (0, response_1.successCode)(common_1.HttpStatus.CREATED, processData, 'Bình luận đã được tạo');
+            }
+            else {
+                return (0, response_1.failCode)(common_1.HttpStatus.BAD_REQUEST, 'ID người dùng không tồn tại trong hệ thống');
+            }
+        }
+        return (0, response_1.failCode)(common_1.HttpStatus.BAD_REQUEST, 'ID hình và người dùng không tồn tại trong hệ thống');
+    }
+    async getUser() {
+        const user = await this.prisma.nguoi_dung.findMany();
+        return (0, response_1.successCode)(common_1.HttpStatus.ACCEPTED, user, 'Lấy dữ liệu thành công');
     }
 };
 AppService = __decorate([

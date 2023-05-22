@@ -1,7 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { PrismaClient, nguoi_dung } from '@prisma/client';
+import { PrismaClient, binh_luan, nguoi_dung } from '@prisma/client';
 import * as bcrypt from 'bcrypt'
 import { failCode, successCode } from './untils/response';
+import * as moment from 'moment'
+import { ListUser } from './entities/auth.entity';
+
 @Injectable()
 export class AppService {
   private prisma = new PrismaClient()
@@ -17,7 +20,6 @@ export class AppService {
     }
     const mat_khau = bcrypt.hashSync(nguoi_dung.mat_khau, 1)
     const data = { ...nguoi_dung, mat_khau }
-    console.log(data)
     await this.prisma.nguoi_dung.create({ data })
     throw new HttpException('Đăng ký thành công', HttpStatus.CREATED)
   }
@@ -97,7 +99,31 @@ export class AppService {
     }
     return failCode(HttpStatus.ACCEPTED, 'Hình chưa được lưu')
   }
-  // getCommentImgId(id){
-  //   const comment = this.prisma.binh_luan.create({})
-  // }
+  async createCommentImgId(binhLuan: binh_luan) {
+    const checkImg = await this.prisma.hinh_anh.findFirst({
+      where: {
+        hinh_id: +binhLuan.hinh_id
+      }
+    })
+    const checkUser = await this.prisma.nguoi_dung.findFirst({
+      where: {
+        nguoi_dung_id: +binhLuan.nguoi_dung_id
+      }
+    })
+    if (checkImg) {
+      if (checkUser) {
+        const ngay_binh_luan = moment(binhLuan.ngay_binh_luan, 'YYYY-MM-DD HH:mm:ss').toDate()
+        const processData = { ...binhLuan, ngay_binh_luan }
+        await this.prisma.binh_luan.create({ data: processData })
+        return successCode(HttpStatus.CREATED, processData, 'Bình luận đã được tạo')
+      } else {
+        return failCode(HttpStatus.BAD_REQUEST, 'ID người dùng không tồn tại trong hệ thống')
+      }
+    }
+    return failCode(HttpStatus.BAD_REQUEST, 'ID hình và người dùng không tồn tại trong hệ thống')
+  }
+  async getUser() {
+    const user = await this.prisma.nguoi_dung.findMany()
+    return successCode(HttpStatus.ACCEPTED, user, 'Lấy dữ liệu thành công')
+  }
 }

@@ -1,3 +1,4 @@
+import { binh_luan } from '@prisma/client';
 export declare class AppService {
     private prisma;
     sigupUser(nguoi_dung: any): Promise<void>;
@@ -14,6 +15,15 @@ export declare class AppService {
     }>;
     getImgSaveId(id: any): Promise<{
         status: number;
+        message: string;
+    }>;
+    createCommentImgId(binhLuan: binh_luan): Promise<{
+        status: number;
+        message: string;
+    }>;
+    getUser(): Promise<{
+        status: number;
+        data: any;
         message: string;
     }>;
 }
