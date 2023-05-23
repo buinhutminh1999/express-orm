@@ -46,6 +46,15 @@ let AppController = class AppController {
     getUser() {
         return this.appService.getUser();
     }
+    getImgId(userid, idimg) {
+        return this.appService.getImgId(userid, idimg);
+    }
+    getImgUserId(userid) {
+        return this.appService.getImgUserId(userid);
+    }
+    deleUserImg(id) {
+        return this.appService.deleUserImg(id);
+    }
 };
 __decorate([
     (0, common_1.Post)('/signup'),
@@ -108,6 +117,28 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], AppController.prototype, "getUser", null);
+__decorate([
+    (0, common_1.Get)('/img-save/:userid/:idimg'),
+    __param(0, (0, common_1.Param)('userid')),
+    __param(1, (0, common_1.Param)('idimg')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", void 0)
+], AppController.prototype, "getImgId", null);
+__decorate([
+    (0, common_1.Get)('/img-user/:userid'),
+    __param(0, (0, common_1.Param)('userid')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], AppController.prototype, "getImgUserId", null);
+__decorate([
+    (0, common_1.Delete)('/delete-img/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", void 0)
+], AppController.prototype, "deleUserImg", null);
 AppController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService])

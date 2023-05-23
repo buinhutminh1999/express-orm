@@ -132,6 +132,40 @@ let AppService = class AppService {
         const user = await this.prisma.nguoi_dung.findMany();
         return (0, response_1.successCode)(common_1.HttpStatus.ACCEPTED, user, 'Lấy dữ liệu thành công');
     }
+    async getImgId(id, idimg) {
+        console.log(idimg);
+        const saveImg = await this.prisma.luu_anh.findMany({
+            where: {
+                hinh_id: +id,
+                nguoi_dung_id: +idimg
+            }
+        });
+        console.log('saveImg', saveImg);
+        if (saveImg.length !== 0) {
+            return (0, response_1.successCode)(common_1.HttpStatus.ACCEPTED, saveImg, 'Lấy dữ liệu thành công');
+        }
+        return (0, response_1.failCode)(common_1.HttpStatus.BAD_REQUEST, 'Không tìm thấy hình ảnh nào đã lưu');
+    }
+    async getImgUserId(userid) {
+        const checkImg = await this.prisma.hinh_anh.findMany({
+            where: {
+                nguoi_dung_id: +userid
+            }
+        });
+        if (checkImg.length !== 0) {
+            return (0, response_1.successCode)(common_1.HttpStatus.ACCEPTED, checkImg, 'Lấy dữ liệu thành công');
+        }
+        return (0, response_1.failCode)(common_1.HttpStatus.BAD_REQUEST, 'Không tìm thấy hình ảnh nào đã tạo theo userid');
+    }
+    async deleUserImg(id) {
+        console.log('id', id);
+        await this.prisma.hinh_anh.delete({
+            where: {
+                hinh_id: +id
+            }
+        });
+        return 'xóa';
+    }
 };
 AppService = __decorate([
     (0, common_1.Injectable)()

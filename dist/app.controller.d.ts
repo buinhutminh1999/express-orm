@@ -28,4 +28,13 @@ export declare class AppController {
         data: any;
         message: string;
     }>;
+    getImgId(userid: string, idimg: string): Promise<{
+        status: number;
+        message: string;
+    }>;
+    getImgUserId(userid: string): Promise<{
+        status: number;
+        message: string;
+    }>;
+    deleUserImg(id: string): Promise<string>;
 }
