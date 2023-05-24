@@ -1,7 +1,10 @@
-import { Body, Controller, Get, Post, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Delete, UseInterceptors,UploadedFile } from '@nestjs/common';
 import { AppService } from './app.service';
-import { binh_luan, nguoi_dung } from '@prisma/client';
+import { binh_luan, hinh_anh, nguoi_dung } from '@prisma/client';
 import { ListUser } from './entities/auth.entity';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { cwd } from 'process';
 
 @Controller()
 export class AppController {
@@ -57,4 +60,17 @@ export class AppController {
   deleUserImg(@Param('id') id: string) {
     return this.appService.deleUserImg(id)
   }
+  @Post('/upload')
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: process.cwd() + '/public/imgs',
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        cb(null, file.fieldname + '-' + uniqueSuffix);
+      },
+    }),
+  }))
+  uploadImgUser(@UploadedFile() file: Express.Multer.File, @Body() body:hinh_anh){
+    return this.appService.uploadImgUser(file, body)
+    }
 }

@@ -1,5 +1,6 @@
+/// <reference types="multer" />
 import { AppService } from './app.service';
-import { binh_luan, nguoi_dung } from '@prisma/client';
+import { binh_luan, hinh_anh, nguoi_dung } from '@prisma/client';
 export declare class AppController {
     private readonly appService;
     constructor(appService: AppService);
@@ -36,5 +37,9 @@ export declare class AppController {
         status: number;
         message: string;
     }>;
-    deleUserImg(id: string): Promise<string>;
+    deleUserImg(id: string): Promise<{
+        status: number;
+        message: string;
+    }>;
+    uploadImgUser(file: Express.Multer.File, body: hinh_anh): Promise<string>;
 }

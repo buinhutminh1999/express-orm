@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AppController = void 0;
 const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
+const platform_express_1 = require("@nestjs/platform-express");
+const multer_1 = require("multer");
 let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
@@ -54,6 +56,9 @@ let AppController = class AppController {
     }
     deleUserImg(id) {
         return this.appService.deleUserImg(id);
+    }
+    uploadImgUser(file, body) {
+        return this.appService.uploadImgUser(file, body);
     }
 };
 __decorate([
@@ -139,6 +144,23 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", void 0)
 ], AppController.prototype, "deleUserImg", null);
+__decorate([
+    (0, common_1.Post)('/upload'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('file', {
+        storage: (0, multer_1.diskStorage)({
+            destination: process.cwd() + '/public/imgs',
+            filename: (req, file, cb) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                cb(null, file.fieldname + '-' + uniqueSuffix);
+            },
+        }),
+    })),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
+], AppController.prototype, "uploadImgUser", null);
 AppController = __decorate([
     (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService])

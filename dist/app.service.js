@@ -158,13 +158,25 @@ let AppService = class AppService {
         return (0, response_1.failCode)(common_1.HttpStatus.BAD_REQUEST, 'Không tìm thấy hình ảnh nào đã tạo theo userid');
     }
     async deleUserImg(id) {
-        console.log('id', id);
-        await this.prisma.hinh_anh.delete({
+        const checkImg = await this.prisma.hinh_anh.findFirst({
             where: {
                 hinh_id: +id
             }
         });
-        return 'xóa';
+        if (checkImg) {
+            await this.prisma.hinh_anh.delete({
+                where: {
+                    hinh_id: +id
+                }
+            });
+            return (0, response_1.successCode)(common_1.HttpStatus.ACCEPTED, checkImg, 'Xóa thành công');
+        }
+        return (0, response_1.failCode)(common_1.HttpStatus.BAD_REQUEST, 'Không tìm thấy hình ảnh nào');
+    }
+    async uploadImgUser(file, body) {
+        const newData = Object.assign(Object.assign({}, body), { duong_dan: file.filename });
+        await this.prisma.hinh_anh.create({ data: newData });
+        return 'thành công';
     }
 };
 AppService = __decorate([
