@@ -5,7 +5,6 @@ export declare class AppController {
     private readonly appService;
     constructor(appService: AppService);
     sigupUser(body: nguoi_dung): Promise<void>;
-    loginUser(body: any): Promise<void>;
     getListImage(): Promise<void>;
     findImageId(id: string): Promise<void>;
     getImageIdUser(id: string): Promise<{
@@ -42,4 +41,8 @@ export declare class AppController {
         message: string;
     }>;
     uploadImgUser(file: Express.Multer.File, body: hinh_anh): Promise<string>;
+    updateUser(body: nguoi_dung): Promise<{
+        status: number;
+        message: string;
+    }>;
 }

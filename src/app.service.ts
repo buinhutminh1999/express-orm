@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt'
 import { failCode, successCode } from './untils/response';
 import * as moment from 'moment'
 import { ListUser } from './entities/auth.entity';
+import { check } from 'prettier';
 
 @Injectable()
 export class AppService {
@@ -18,28 +19,12 @@ export class AppService {
     if (checkUser) {
       throw new HttpException('Email đã được đăng ký', HttpStatus.BAD_REQUEST)
     }
-    const mat_khau = bcrypt.hashSync(nguoi_dung.mat_khau, 1)
+    const mat_khau = bcrypt.hashSync(nguoi_dung.mat_khau, 10)
     const data = { ...nguoi_dung, mat_khau }
     await this.prisma.nguoi_dung.create({ data })
     throw new HttpException('Đăng ký thành công', HttpStatus.CREATED)
   }
-  async loginUser(userLogin) {
-    const user = await this.prisma.nguoi_dung.findFirst({
-      where: {
-        email: userLogin.email
-      }
-    })
-    if (user) {
-      const checkPass = bcrypt.compareSync(userLogin.mat_khau, user.mat_khau)
-      if (checkPass) {//kiểm tra mật khẩu
-        throw new HttpException('Đăng nhập thành công', HttpStatus.ACCEPTED)
-      } else {
-        throw new HttpException('Mật khẩu không đúng', HttpStatus.BAD_REQUEST)
-      }
-    } else {
-      throw new HttpException('Email không đúng', HttpStatus.BAD_REQUEST)
-    }
-  }
+  
   async getListImage() {
     const data = await this.prisma.hinh_anh.findMany()
     throw new HttpException({ data }, HttpStatus.ACCEPTED)
@@ -174,5 +159,24 @@ export class AppService {
     const newData = { ...body, duong_dan: file.filename }
     await this.prisma.hinh_anh.create({ data: newData })
     return 'thành công'
+  }
+
+  async updateUser(body: nguoi_dung) {
+    const checkUser = await this.prisma.nguoi_dung.findFirst({
+      where: {
+        nguoi_dung_id: +body.nguoi_dung_id,
+      }
+    })
+    if (checkUser) {
+      const mat_khau = bcrypt.hashSync(body.mat_khau, 10)
+      const newUser = { ...body, mat_khau }
+      await this.prisma.nguoi_dung.update({
+        data: newUser, where: {
+          nguoi_dung_id: +body.nguoi_dung_id
+        }
+      })
+      return successCode(HttpStatus.ACCEPTED, newUser, 'Cập nhật thành công')
+    }
+    return failCode(HttpStatus.BAD_REQUEST, 'Cập nhật thất bai')
   }
 }

@@ -17,15 +17,14 @@ const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
 const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
+const swagger_1 = require("@nestjs/swagger");
+const passport_1 = require("@nestjs/passport");
 let AppController = class AppController {
     constructor(appService) {
         this.appService = appService;
     }
     sigupUser(body) {
         return this.appService.sigupUser(body);
-    }
-    loginUser(body) {
-        return this.appService.loginUser(body);
     }
     getListImage() {
         return this.appService.getListImage();
@@ -60,6 +59,9 @@ let AppController = class AppController {
     uploadImgUser(file, body) {
         return this.appService.uploadImgUser(file, body);
     }
+    updateUser(body) {
+        return this.appService.updateUser(body);
+    }
 };
 __decorate([
     (0, common_1.Post)('/signup'),
@@ -68,13 +70,6 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], AppController.prototype, "sigupUser", null);
-__decorate([
-    (0, common_1.Post)('/login'),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", void 0)
-], AppController.prototype, "loginUser", null);
 __decorate([
     (0, common_1.Get)('/get-image'),
     __metadata("design:type", Function),
@@ -161,8 +156,17 @@ __decorate([
     __metadata("design:paramtypes", [Object, Object]),
     __metadata("design:returntype", void 0)
 ], AppController.prototype, "uploadImgUser", null);
+__decorate([
+    (0, common_1.Put)('/update-user'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AppController.prototype, "updateUser", null);
 AppController = __decorate([
     (0, common_1.Controller)(),
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     __metadata("design:paramtypes", [app_service_1.AppService])
 ], AppController);
 exports.AppController = AppController;

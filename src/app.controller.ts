@@ -1,12 +1,14 @@
-import { Body, Controller, Get, Post, Param, Delete, UseInterceptors,UploadedFile } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Delete, UseInterceptors, UploadedFile, Put, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
 import { binh_luan, hinh_anh, nguoi_dung } from '@prisma/client';
 import { ListUser } from './entities/auth.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { cwd } from 'process';
-
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 @Controller()
+@ApiBearerAuth()// Đánh dấu xác thực Bearer token cho tất cả các endpoint trong controller này
+@UseGuards(AuthGuard('jwt'))// Sử dụng JwtAuthGuard để bảo vệ các endpoint trong controller này
 export class AppController {
   constructor(private readonly appService: AppService) { }
 
@@ -14,10 +16,7 @@ export class AppController {
   sigupUser(@Body() body: nguoi_dung) {
     return this.appService.sigupUser(body)
   }
-  @Post('/login')
-  loginUser(@Body() body) {
-    return this.appService.loginUser(body)
-  }
+
   @Get('/get-image')
   getListImage() {
     return this.appService.getListImage()
@@ -70,7 +69,13 @@ export class AppController {
       },
     }),
   }))
-  uploadImgUser(@UploadedFile() file: Express.Multer.File, @Body() body:hinh_anh){
+  uploadImgUser(@UploadedFile() file: Express.Multer.File, @Body() body: hinh_anh) {
     return this.appService.uploadImgUser(file, body)
-    }
+  }
+
+  @Put('/update-user')
+  updateUser(@Body() body: nguoi_dung) {
+    return this.appService.updateUser(body)
+  }
+
 }

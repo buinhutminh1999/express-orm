@@ -25,29 +25,10 @@ let AppService = class AppService {
         if (checkUser) {
             throw new common_1.HttpException('Email đã được đăng ký', common_1.HttpStatus.BAD_REQUEST);
         }
-        const mat_khau = bcrypt.hashSync(nguoi_dung.mat_khau, 1);
+        const mat_khau = bcrypt.hashSync(nguoi_dung.mat_khau, 10);
         const data = Object.assign(Object.assign({}, nguoi_dung), { mat_khau });
         await this.prisma.nguoi_dung.create({ data });
         throw new common_1.HttpException('Đăng ký thành công', common_1.HttpStatus.CREATED);
-    }
-    async loginUser(userLogin) {
-        const user = await this.prisma.nguoi_dung.findFirst({
-            where: {
-                email: userLogin.email
-            }
-        });
-        if (user) {
-            const checkPass = bcrypt.compareSync(userLogin.mat_khau, user.mat_khau);
-            if (checkPass) {
-                throw new common_1.HttpException('Đăng nhập thành công', common_1.HttpStatus.ACCEPTED);
-            }
-            else {
-                throw new common_1.HttpException('Mật khẩu không đúng', common_1.HttpStatus.BAD_REQUEST);
-            }
-        }
-        else {
-            throw new common_1.HttpException('Email không đúng', common_1.HttpStatus.BAD_REQUEST);
-        }
     }
     async getListImage() {
         const data = await this.prisma.hinh_anh.findMany();
@@ -177,6 +158,24 @@ let AppService = class AppService {
         const newData = Object.assign(Object.assign({}, body), { duong_dan: file.filename });
         await this.prisma.hinh_anh.create({ data: newData });
         return 'thành công';
+    }
+    async updateUser(body) {
+        const checkUser = await this.prisma.nguoi_dung.findFirst({
+            where: {
+                nguoi_dung_id: +body.nguoi_dung_id,
+            }
+        });
+        if (checkUser) {
+            const mat_khau = bcrypt.hashSync(body.mat_khau, 10);
+            const newUser = Object.assign(Object.assign({}, body), { mat_khau });
+            await this.prisma.nguoi_dung.update({
+                data: newUser, where: {
+                    nguoi_dung_id: +body.nguoi_dung_id
+                }
+            });
+            return (0, response_1.successCode)(common_1.HttpStatus.ACCEPTED, newUser, 'Cập nhật thành công');
+        }
+        return (0, response_1.failCode)(common_1.HttpStatus.BAD_REQUEST, 'Cập nhật thất bai');
     }
 };
 AppService = __decorate([
