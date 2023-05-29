@@ -1,9 +1,17 @@
 export const successCode = (status: number, data, message: string) => {
-    return {
-        status,
-        data,
-        message
-    }
+    const token = ''
+    return message == 'Đăng nhập thành công'
+        ? {
+            status,
+            token: data,
+            message
+        }
+        : {
+            status,
+            data,
+            message
+        }
+
 }
 
 export const failCode = (status: number, message: string) => {
@@ -12,10 +20,3 @@ export const failCode = (status: number, message: string) => {
         message
     }
 }
-//  const successCode = (res,message, data) => {
-//     res.status(200).json({
-//         statusCode: 200,
-//         message,
-//         data
-//     })
-// }

@@ -20,7 +20,7 @@ let AuthService = class AuthService {
         this.jwtService = jwtService;
         this.prisma = new client_1.PrismaClient();
     }
-    async loginUser(userLogin, res) {
+    async loginUser(userLogin) {
         const user = await this.prisma.nguoi_dung.findFirst({
             where: {
                 email: userLogin.email
@@ -29,9 +29,8 @@ let AuthService = class AuthService {
         if (user) {
             const checkPass = bcrypt.compareSync(userLogin.mat_khau, user.mat_khau);
             if (checkPass) {
-                const token = await this.jwtService.sign(user);
-                console.log('token', token);
-                return (0, response_1.successCode)(common_1.HttpStatus.ACCEPTED, token, 'Đăng nhập thành công');
+                const genToken = await this.jwtService.signAsync(user, { expiresIn: '1h', secret: process.env.SECRET_KEY });
+                return (0, response_1.successCode)(common_1.HttpStatus.ACCEPTED, genToken, 'Đăng nhập thành công');
             }
             else {
                 throw new common_1.HttpException('Mật khẩu không đúng', common_1.HttpStatus.BAD_REQUEST);

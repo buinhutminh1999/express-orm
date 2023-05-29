@@ -17,7 +17,6 @@ const common_1 = require("@nestjs/common");
 const app_service_1 = require("./app.service");
 const platform_express_1 = require("@nestjs/platform-express");
 const multer_1 = require("multer");
-const swagger_1 = require("@nestjs/swagger");
 const passport_1 = require("@nestjs/passport");
 let AppController = class AppController {
     constructor(appService) {
@@ -164,9 +163,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], AppController.prototype, "updateUser", null);
 AppController = __decorate([
-    (0, common_1.Controller)(),
-    (0, swagger_1.ApiBearerAuth)(),
     (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.Controller)(),
     __metadata("design:paramtypes", [app_service_1.AppService])
 ], AppController);
 exports.AppController = AppController;

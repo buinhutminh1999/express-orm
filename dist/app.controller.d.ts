@@ -25,8 +25,14 @@ export declare class AppController {
     }>;
     getUser(): Promise<{
         status: number;
+        token: any;
+        message: string;
+        data?: undefined;
+    } | {
+        status: number;
         data: any;
         message: string;
+        token?: undefined;
     }>;
     getImgId(userid: string, idimg: string): Promise<{
         status: number;

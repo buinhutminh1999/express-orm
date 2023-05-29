@@ -1,14 +1,11 @@
-import { Body, Controller, Get, Post, Param, Delete, UseInterceptors, UploadedFile, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Param, Delete, UseInterceptors, UploadedFile, Put, UseGuards, Req } from '@nestjs/common';
 import { AppService } from './app.service';
 import { binh_luan, hinh_anh, nguoi_dung } from '@prisma/client';
-import { ListUser } from './entities/auth.entity';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
+@UseGuards(AuthGuard('jwt'))
 @Controller()
-@ApiBearerAuth()// Đánh dấu xác thực Bearer token cho tất cả các endpoint trong controller này
-@UseGuards(AuthGuard('jwt'))// Sử dụng JwtAuthGuard để bảo vệ các endpoint trong controller này
 export class AppController {
   constructor(private readonly appService: AppService) { }
 
@@ -77,5 +74,6 @@ export class AppController {
   updateUser(@Body() body: nguoi_dung) {
     return this.appService.updateUser(body)
   }
+
 
 }

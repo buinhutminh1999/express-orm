@@ -1,18 +1,16 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Res } from '@nestjs/common';
-import { AuthService } from './auth.service';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiTags } from '@nestjs/swagger';
 import { nguoi_dung } from '@prisma/client';
 import { Response } from 'express';
-
-@ApiTags('LOGIN')
+import { AuthService } from './auth.service';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
+  // private jwt: JwtService
 
   @Post('/login')
-  loginUser(@Body() body: nguoi_dung, @Res() res: Response) {
-    return this.authService.loginUser(body, res)
+  loginUser(@Body() body: nguoi_dung) {
+    return this.authService.loginUser(body)
   }
 
 }

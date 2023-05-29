@@ -23,8 +23,14 @@ export declare class AppService {
     }>;
     getUser(): Promise<{
         status: number;
+        token: any;
+        message: string;
+        data?: undefined;
+    } | {
+        status: number;
         data: any;
         message: string;
+        token?: undefined;
     }>;
     getImgId(id: string, idimg: string): Promise<{
         status: number;

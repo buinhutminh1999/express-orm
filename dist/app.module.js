@@ -11,13 +11,17 @@ const common_1 = require("@nestjs/common");
 const app_controller_1 = require("./app.controller");
 const app_service_1 = require("./app.service");
 const auth_module_1 = require("./auth/auth.module");
+const jwt_strategy_1 = require("./auth/middleware/jwt.strategy");
+const jwt_1 = require("@nestjs/jwt");
 let AppModule = class AppModule {
 };
 AppModule = __decorate([
     (0, common_1.Module)({
-        imports: [auth_module_1.AuthModule],
+        imports: [auth_module_1.AuthModule, jwt_1.JwtModule.register({
+                global: true,
+            })],
         controllers: [app_controller_1.AppController],
-        providers: [app_service_1.AppService],
+        providers: [app_service_1.AppService, jwt_strategy_1.JwtStrategy],
     })
 ], AppModule);
 exports.AppModule = AppModule;
